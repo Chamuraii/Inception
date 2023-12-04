@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+
+  nginx:
+    container_name: nginx
+    image: nginx_img
+
+  mariadb:
+    container_name: database
+    image: mariadb_img
+    volumes:
+      - db:/requirements/mariadb
+
+  wordpress:
+    container_name: wordpress
+    image: wordpress_img
+    ports:
+      - 443:443
+    depends_on:
+      - mariadb
+
+volumes:
+  mariadb:
+  wordpress:
