@@ -1,24 +1,36 @@
-version: "3"
+version: '3'
 
 services:
 
   nginx:
     container_name: nginx
-    image: nginx_img
+    build: requirements/nginx
+    # image: nginx1
+    ports:
+      - 443:443
 
   mariadb:
     container_name: database
-    image: mariadb_img
+    build: requirements/mariadb
+    # image: mariadb1
+    environment:
+      MARIADB_ROOT_PASSWORD : rootpassword
+      MARIADB_USER: user
+      MARIADB_PASSWORD: password
     volumes:
-      - db:/requirements/mariadb
+       - /requirements/mariadb/
+    networks:
+      - backnet
 
   wordpress:
     container_name: wordpress
-    image: wordpress_img
-    ports:
-      - 443:443
+    build: requirements/wordpress
+    # image: wordpress1
     depends_on:
       - mariadb
+
+networks:
+  backnet:
 
 volumes:
   mariadb:
