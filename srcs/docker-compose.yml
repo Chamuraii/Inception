@@ -4,34 +4,46 @@ services:
 
   nginx:
     container_name: nginx
-    build: requirements/nginx
-    # image: nginx1
+    build:
+      context: requirements/nginx
+      dockerfile: Dockerfile
     ports:
-      - 443:443
+      - '443:443'
 
   mariadb:
     container_name: database
-    build: requirements/mariadb
-    # image: mariadb1
+    build:
+      context: requirements/mariadb
+      dockerfile: Dockerfile
     environment:
       MARIADB_ROOT_PASSWORD : rootpassword
       MARIADB_USER: user
       MARIADB_PASSWORD: password
     volumes:
-       - /requirements/mariadb/
+       - mariadb_data:/requirements/mariadb/
     networks:
       - backnet
 
   wordpress:
     container_name: wordpress
-    build: requirements/wordpress
-    # image: wordpress1
+    build:
+      context: requirements/wordpress
+      dockerfile: Dockerfile
+  #  environment:
+   #   WORDPRESS_DB_HOST: db:3306
+   #   WORDPRESS_DB_USER: wordpress
+   #   WORDPRESS_DB_PASSWORD: wordpress
+   # working_dir: /var/www/html
+    volumes:
+       - wordpress:/requirements/wordpress/
     depends_on:
       - mariadb
+    ports:
+      - '8000:80'
 
 networks:
   backnet:
 
 volumes:
-  mariadb:
+  mariadb_data:
   wordpress:
