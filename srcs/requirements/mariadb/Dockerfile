@@ -6,6 +6,8 @@ RUN apt-get install -y mariadb-server
 
 COPY ./tools/script.sh /usr/local/bin/
 
+EXPOSE 3306
+
 RUN chmod +x /usr/local/bin/script.sh
 
 RUN /usr/local/bin/script.sh

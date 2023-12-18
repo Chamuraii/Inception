@@ -24,6 +24,8 @@ services:
        - mariadb_data:/requirements/mariadb/
     networks:
       - backnet
+    ports:
+      - '3306:3306'
    # restart: unless-stopped
 
   wordpress:
@@ -41,7 +43,7 @@ services:
     depends_on:
       - mariadb
     ports:
-      - '8000:80'
+      - '9000:9000'
    # restart: unless-stopped
 
 networks:
