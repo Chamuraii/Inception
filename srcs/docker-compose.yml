@@ -9,6 +9,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - '443:443'
+    restart: unless-stopped
 
   mariadb:
     container_name: database
@@ -23,6 +24,7 @@ services:
        - mariadb_data:/requirements/mariadb/
     networks:
       - backnet
+   # restart: unless-stopped
 
   wordpress:
     container_name: wordpress
@@ -40,6 +42,7 @@ services:
       - mariadb
     ports:
       - '8000:80'
+   # restart: unless-stopped
 
 networks:
   backnet:
