@@ -1,21 +1,29 @@
 FROM debian:bookworm-20230411
 
+# Install Nginx and OpenSSL
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends nginx-full
-RUN apt install openssl
+RUN apt-get install -y nginx openssl
 
+# Create a directory for SSL certificates
 RUN mkdir /etc/nginx/ssl
 
-RUN cd /etc/nginx/ssl
+# Change working directory to /etc/nginx/ssl
+WORKDIR /etc/nginx/ssl
 
+# Generate SSL certificates
 RUN openssl req -x509 -newkey rsa:4096 -days 365 -nodes -keyout ca-key.pem -out ca-cert.pem -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=Education/CN=42/emailAddress=42@42.fr"
-#RUN openssl x509 -in ca-cert.pem -noout -text
 
-#RUN openssl req -newkey rsa:4096 -nodes -keyout server-key.pem -out server-req.pem -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=Education/CN=42/emailAddress=42@42.fr"
+# Change working directory back to the root
+WORKDIR /
 
-#RUN openssl x509 -req -in server-req.pem -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out server-cert.pem -extfile server-ext.cnf
-#RUN openssl x509 -in server-cert.pem -noout -text
+# Create a directory for Nginx configuration
+RUN mkdir -p /etc/nginx/conf
 
+# Copy Nginx configuration file
+COPY /conf/nginx.conf /etc/nginx/conf/nginx.conf
+
+# Expose port 443
 EXPOSE 443
 
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]

@@ -7,6 +7,8 @@ services:
     build:
       context: requirements/nginx
       dockerfile: Dockerfile
+    networks:
+      - network
     ports:
       - '443:443'
     restart: unless-stopped
@@ -23,7 +25,7 @@ services:
     volumes:
        - mariadb_data:/requirements/mariadb/
     networks:
-      - backnet
+      - network
     ports:
       - '3306:3306'
    # restart: unless-stopped
@@ -42,12 +44,15 @@ services:
        - wordpress:/requirements/wordpress/
     depends_on:
       - mariadb
+    networks:
+      - network
     ports:
       - '9000:9000'
    # restart: unless-stopped
 
 networks:
-  backnet:
+  network:
+    driver: bridge
 
 volumes:
   mariadb_data:
