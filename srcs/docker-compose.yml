@@ -26,8 +26,8 @@ services:
        - mariadb_data:/requirements/mariadb/
     networks:
       - network
-    ports:
-      - '3306:3306'
+    #ports:
+    #  - '3306:3306'
    # restart: unless-stopped
 
   wordpress:
@@ -35,10 +35,10 @@ services:
     build:
       context: requirements/wordpress
       dockerfile: Dockerfile
-  #  environment:
-   #   WORDPRESS_DB_HOST: db:3306
-   #   WORDPRESS_DB_USER: wordpress
-   #   WORDPRESS_DB_PASSWORD: wordpress
+    environment:
+      - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+      - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
    # working_dir: /var/www/html
     volumes:
        - wordpress:/requirements/wordpress/
@@ -46,8 +46,8 @@ services:
       - mariadb
     networks:
       - network
-    ports:
-      - '9000:9000'
+   # ports:
+    #  - '9000:9000'
    # restart: unless-stopped
 
 networks:

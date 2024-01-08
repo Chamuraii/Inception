@@ -1,17 +1,29 @@
 FROM debian:bookworm-20230411
 
+EXPOSE 3306
+
 RUN apt-get update
 RUN apt-get install -y mariadb-server
 #RUN apt-get install -y mariadb-client
 
-COPY ./tools/script.sh /usr/local/bin/
+RUN mkdir /run/mysqld
 
-EXPOSE 3306
+RUN useradd --create-home appuser
+RUN usermod -aG sudo appuser
+COPY . /home/appuser
+WORKDIR /home/appuser
+RUN chown -R appuser /home/appuser /var/lib/mysql /run/mysqld
 
-RUN chmod +x /usr/local/bin/script.sh
+WORKDIR /home/appuser/conf
+RUN touch init.sql
+RUN chmod 777 init.sql
+RUN echo "CREATE DATABASE IF NOT EXISTS wordpress; GRANT ALL ON *.* TO 'appuser'@'localhost' IDENTIFIED BY 'password'; CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password2'; DROP USER 'mysql'@'localhost';" >> init.sql
+#RUN /home/appuser/conf/init.sql
+#ENV USER=appuser
 
-RUN /usr/local/bin/script.sh
+WORKDIR /home/appuser
+USER appuser
 
-#ENTRYPOINT [ "/usr/local/bin/script.sh"]
+#ENTRYPOINT ["/home/appuser/conf/init.sql"]
 
-CMD ["mysqld"]
+CMD ["mariadbd", "--init-file", "/home/appuser/conf/init.sql"]
