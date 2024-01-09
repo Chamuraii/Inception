@@ -26,6 +26,11 @@ services:
        - mariadb_data:/requirements/mariadb/
     networks:
       - network
+    environment:
+      - DB_NAME=${DB_NAME}
+      - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+      - USER_NAME=${USER_NAME}
+      - USER_PASSWORD=${USER_PASSWORD}
     #ports:
     #  - '3306:3306'
    # restart: unless-stopped
@@ -35,10 +40,10 @@ services:
     build:
       context: requirements/wordpress
       dockerfile: Dockerfile
-    environment:
-      - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
-      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
-      - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+   # environment:
+    #  - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+    #  - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+    #  - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
    # working_dir: /var/www/html
     volumes:
        - wordpress:/requirements/wordpress/
